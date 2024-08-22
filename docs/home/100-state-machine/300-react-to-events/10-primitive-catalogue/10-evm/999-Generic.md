@@ -72,7 +72,7 @@ export interface GenericCdeDataUnit {
 ```ts
 export async function getGenericDataBlockheight(
   readonlyDBConn: PoolClient,
-  cdeName: string,
+  extensionName: string,
   blockHeight: number
 ): Promise<GenericCdeDataUnit[]>;
 ```
@@ -82,7 +82,7 @@ export async function getGenericDataBlockheight(
 ```ts
 export async function getGenericDataBlockheightRange(
   readonlyDBConn: PoolClient,
-  cdeName: string,
+  extensionName: string,
   fromBlock: number,
   toBlock: number
 ): Promise<GenericCdeDataUnit[]>;

@@ -13,6 +13,14 @@
   scroll-behavior: smooth;
 }
 
+:root {
+  --ifm-code-background: #88A58E4b !important;
+  
+}
+code {
+  border: solid 0.1em #6294672f;
+}
+
 ul.theme-doc-sidebar-menu > li:nth-child(2)::before {
   color: rgba(25, 177, 123, 0.5);
   content: "- - - - - - - - - - - - -";

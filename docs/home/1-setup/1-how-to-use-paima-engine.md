@@ -95,8 +95,10 @@ npm run pack:middleware
 Each game built with Paima Engine is its very own Layer 2. This means that you will need to deploy the Paima L2 Smart Contract for your game, to whichever chain you wish to launch on on top of any other contract necessary for your app.
 
 For templates, this usually involves simply running:
-1. `npm run chain:start` to start a chain on the local network
-2. `npm run chain:deploy` to deploy contracts to the local network (see `hardhat.config.ts` for network names)
+```bash
+npm run chain:start # start a chain on the local network
+npm run chain:deploy # deploy contracts to the local network (see `hardhat.config.ts` for network names)
+```
 
 If you are running the local network, you should see an output that starts like this
 

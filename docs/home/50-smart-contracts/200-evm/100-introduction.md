@@ -3,8 +3,11 @@
 Paima templates leverage [Hardhat](https://hardhat.org/) for deploying and managing EVM contracts.
 
 Typically, deploying your contracts involve two steps:
-1. `npm run chain:start` to start a chain on the local network
-2. `npm run chain:deploy` to deploy contracts to the local network (see `hardhat.config.ts` for network names)
+
+```bash
+npm run chain:start # start a chain on the local network
+npm run chain:deploy # deploy contracts to the local network (see `hardhat.config.ts` for network names)
+```
 
 Deployments are done leveraging [Hardhat Ignition](https://hardhat.org/ignition/docs/getting-started#overview). You can modify the scripts to deploy all the EVM contracts for your app by modifying `./contracts/evm/ignition/modules/deploy` and you can modify the core Hardhat configs in `hardhat.config.ts`
 
@@ -45,7 +48,7 @@ const config: HardhatUserConfig = {
 
 ### Contracts with custom logic
 
-If you want to add your own custom contract for your game, you place it in `/contracts/evm/solidity`.
+If you want to add your own custom contract for your game, you place it in `./contracts/evm/solidity`.
 
 More generally speaking, you can modify the place where new contracts are loaded by modifying your `hardhat.config.ts`
 
