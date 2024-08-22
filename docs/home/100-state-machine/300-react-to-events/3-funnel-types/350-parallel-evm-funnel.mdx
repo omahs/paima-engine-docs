@@ -1,6 +1,6 @@
 import Search from "./parallel-search.png";
 
-# Parallel EVM funnel
+# EVM Parallel funnel
 
 This funnel processes the same primitives as the [block funnel](./300-block-funnel.md),
 but over extra companion networks. While there can only be a single instance of
@@ -16,8 +16,50 @@ This funnel has the following steps:
 
 1. Fetch blocks & timestamps from the underlying funnel (the main chain you are syncing).
 2. Fetch the latest block from the parallel funnel.
-4. Use `eth_getLogs` to get the [primitives](../10-primitive-catalogue/1-introduction.md) configured to this funnel in the block range.
-5. Merge the primitives fetched from the parallel funnel with the block from the underlying funnel.
+1. Fetch any [dynamic primitive](../10-primitive-catalogue/10-evm/200-dynamic-primitives.md) that needs to be registered
+1. Use `eth_getLogs` to get the [primitives](../10-primitive-catalogue/1-introduction.md) configured to this funnel in the block range.
+1. Merge the primitives fetched from the parallel funnel with the block from the underlying funnel.
+
+Here is a visual representation of the flow:
+
+```mermaid
+stateDiagram-v2
+    [*] --> MainFunnel
+
+    MainFunnel: Main funnel
+
+    SyncMain: Sync main funnel
+    MainFunnel --> SyncMain
+
+    SyncMain --> ParallelEVM
+    
+    ParallelEVM: Parallel EVM Funnel
+    state ParallelEVM {
+      RequestBlockNumber: Request latest block number (<i>v2/status</i>)
+      
+      DynamicPrimitives: Get dynamic primitive updates (<i>eth_getLogs</i>)
+      RequestBlockNumber --> DynamicPrimitives
+
+      GetLogs: Get logs for primitives (<i>eth_getLogs</i>)
+      DynamicPrimitives --> GetLogs
+      
+      ProcessData: Decode block data into rollup data format
+
+      GetLogs --> ProcessData
+    }
+
+    ProcessData --> MergeData
+
+    SyncMain --> MergeData
+
+    MergeData: Merge data with other funnels
+
+    MergeData --> FeedDataToSM
+    
+    FeedDataToSM: Feed data to user-specified state machine
+    
+    FeedDataToSM --> [*]
+```
 
 ### Connecting to networks that produce blocks on-demand
 

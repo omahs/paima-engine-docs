@@ -1,13 +1,70 @@
-# Block Funnel
+# EVM Block Funnel
 
 Block funnel is the most standard funnel type in Paima. It simply downloads the blocks from the RPC provider for the chain you are deploying to.
+
+## Configuration
+
+```yaml
+Hardhat1:
+  type: evm-main
+  chainUri: 'http://localhost:8545'
+  chainId: 31337
+  chainCurrencyName: 'Test Hardhat Tokens'
+  chainCurrencySymbol: 'TEST'
+  chainCurrencyDecimals: 18
+  blockTime: 2
+  paimaL2ContractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+```
+
+## Conceptually
 
 Notably, block funnel will do the following:
 1. Get the latest block number using `eth_blockNumber` so we know how far we are from the tip, and cache it to `latestAvailableBlockNumber`
 1. Fetch a group of `DEFAULT_FUNNEL_GROUP_SIZE` blocks (or less if we're already at the tip)
+1. Fetch any [dynamic primitive](../10-primitive-catalogue/10-evm/200-dynamic-primitives.md) that needs to be registered
 1. Fetch all the block numbers needed in parallel using `eth_getBlockByNumber`
 1. Fetch all the `PaimaGameInteraction` Solidity events for the block range using `eth_getLogs`
 1. Fetch all the [Primitives](../10-primitive-catalogue/1-introduction.md) for the block range using `eth_getLogs`
+
+Here is a visual representation of the flow:
+
+```mermaid
+stateDiagram-v2
+    [*] --> RequestBlockNumber
+    
+    RequestBlockNumber: Request latest block number (<i>eth_blockNumber</i>)
+
+    DynamicPrimitives: Get dynamic primitive updates (<i>eth_getLogs</i>)
+    RequestBlockNumber --> DynamicPrimitives
+    
+    fork_state: fetch remote data for the next group of block numbers
+    DynamicPrimitives --> fork_state
+    state fork_state <<fork>>
+
+    GetBlock: Get block (<i>eth_getBlockByNumber</i>)
+
+    GetLogs: Get logs for primitives (<i>eth_getLogs</i>)
+
+    fork_state --> GetBlock
+    fork_state --> GetLogs
+    
+    join_state: merge data together
+    state join_state <<join>>
+    
+    GetBlock --> join_state
+    GetLogs --> join_state
+    
+    join_state --> ProcessData
+    
+    ProcessData: Decode block data into rollup data format
+
+    ProcessData --> FeedDataToSM
+    
+    FeedDataToSM: Feed data to user-specified state machine
+    
+    FeedDataToSM --> [*]
+```
+
 
 ## Fetching more than just logs
 

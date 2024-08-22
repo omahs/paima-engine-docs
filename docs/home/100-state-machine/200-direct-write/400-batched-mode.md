@@ -1,7 +1,11 @@
 # Batched mode
 
+:::info
+To learn how to setup a batcher yourself, see the documentation [here](../../1-setup/20-paima-bacher.md)
+:::
+
 Paima supports two different modes for inputs:
-1. Non-batched mode. This only supports EVM wallets set to the same network as used for the settlement layer of the app. Transaction are submitted directly by the user (and they cover the transaction fees)
+1. Non-batched mode. This only supports wallets set to the same network as used for the settlement layer of the app. Transaction are submitted directly by the user (and they cover the transaction fees)
 2. Batched mode. Users sign data, and transactions are crafted by the batcher. This allows users to use the app with different EVM networks or wallets from different cryptocurrencies.
 
 We protect batched mode users by calculating `sign(securityPrefix || input || timestamp)` where:
@@ -38,6 +42,17 @@ Key notes:
 - `B` is used to denote this is a batched game input transaction. It is simply the ASCII character `B`.
 - `~` in practice is actually the `\x02` ASCII character
 - `/` in practice is actually the `\x03` ASCII character
+
+## Supported networks
+
+Users often only have a crypto wallet for a single ecosystem (if they even have one at all), so the Paima batcher system allows you to have these users still use your application (even if it spans multiple different networks) by providing a batcher that submits transactions on their behalf when required.
+
+The Paima batcher supports different stacks based on an `BATCHER_NETWORK` variable (learn more about the environment setup [here](../../1-setup/20-paima-bacher.md)). Notably, it supports:
+
+- EVM
+- Avail
+
+For each network, the batcher will submit transactions and wait for finalization. The batcher exposes an event listener so that other tools can monitor a transaction's progress from being received by the batcher all the way to finalization onchain, and you can find the documentation for these events [here](../325-creating-events/100-events/110-builtin-events.md).
 
 ## Architecture
 

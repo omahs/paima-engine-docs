@@ -1,6 +1,12 @@
 import Search from "./parallel-search.png";
 
-# Parallel Avail funnel
+# Avail Parallel funnel
+
+Note that there are two Avail funnels:
+- [Avail block funnel](./800-avail-block-funnel.md) for when Avail is the main chain for your app
+- [Avail parallel funnel](./700-parallel-avail-funnel.md) for when a different chain is the main chain for your app, and you sync Avail in parallel for extra data
+
+You can learn more about the concept of parallel funnels [here](./1-common-concepts/2-parallel-networks.mdx)
 
 ## Configuration
 
@@ -26,6 +32,48 @@ deterministic mapping from blocks from this chain to the main chain.
 3. Fetch the latest block the light client has processed.
 4. Merge the submitted data with the one coming from the base funnel by
 appending to it.
+
+Here is a visual representation of the flow:
+
+```mermaid
+stateDiagram-v2
+    [*] --> MainFunnel
+
+    MainFunnel: Main funnel
+
+    SyncMain: Sync main funnel
+    MainFunnel --> SyncMain
+
+    SyncMain --> ParallelAvail
+    
+    ParallelAvail: Parallel Avail Funnel
+    state ParallelAvail {
+      RequestBlockNumber: Request latest block number (<i>v2/status</i>)
+      
+      GetBlockData: Get <b>only</b> blocks for rollup (<i>v2/blocks/{block}/data</i>)
+      RequestBlockNumber --> GetBlockData
+
+      GetBlockHeaders: Get block header for relevant blocks (<i>v2/blocks/${block}/header</i>)
+
+      GetBlockData --> GetBlockHeaders
+      
+      ProcessData: Decode block data into rollup data format
+
+      GetBlockHeaders --> ProcessData
+    }
+
+    ProcessData --> MergeData
+
+    SyncMain --> MergeData
+
+    MergeData: Merge data with other funnels
+
+    MergeData --> FeedDataToSM
+    
+    FeedDataToSM: Feed data to user-specified state machine
+    
+    FeedDataToSM --> [*]
+```
 
 ## Finding parallel chain blocks
 

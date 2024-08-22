@@ -4,6 +4,15 @@ This funnel allows using Cardano Primitives leveraging [Carp](https://dcspark.gi
 
 ## Configuration
 
+```yaml
+Cardano:
+  type: cardano
+  carpUrl: http://localhost:3000
+  network: preview
+  confirmationDepth: 10
+  paginationLimit: 2
+```
+
 - `network` which Cardano network this funnel will track
 - `confirmationDepth` when a block is considered stable
 - `paginationLimit` used as the pagination limit for underlying Carp queries
