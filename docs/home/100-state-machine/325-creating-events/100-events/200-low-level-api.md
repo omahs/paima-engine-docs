@@ -70,7 +70,7 @@ mqtt-client-cli ws://localhost:8883
 sub node/block/#
 ```
 
-#### mqtt.js
+### mqtt.js
 
 ```bash
 # subscribe to topic
@@ -79,4 +79,4 @@ mqtt sub -t 'node/block/#' -h 'ws://localhost:8883' -v
 mqtt pub -t 'node/block/#' -h 'ws://localhost:8883' -m '{ msg: "test message" }'
 ```
 
-See docs [here](https://github.com/mqttjs/MQTT.js/?tab=readme-ov-file#command-line-tools)
+See docs for the command line tool [here](https://github.com/mqttjs/MQTT.js/?tab=readme-ov-file#command-line-tools)

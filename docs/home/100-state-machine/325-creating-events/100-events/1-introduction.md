@@ -23,3 +23,10 @@ Notably, for Paima's event system, we had the following desirable properties:
     1. Historical events are kept permanently by default
     1. (for historical data) Events should be accessible via a [REST](https://en.wikipedia.org/wiki/REST) interface
     1. (for realtime data) Events should be accessible via a [pub-sub system](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern)
+
+## Use-cases
+
+1. **Analytics**: event logs can help you get exactly the data you need for better insight into your game, like knowing how many users have completed a quest
+1. **Notifications**: events can easily be streamed into other tools like Discord bots to give notifications when users perform notable actions 
+1. **Shadow logs**: sometimes it can be hard (or gas expensive!) to encode the exact logging statements you want in Solidity. In fact, sometimes it can be impossible if your application spans multiple stacks or contains non-EVM components. Paima event logs can solve this by acting as *shadow logs*: logs that are deterministically emitted as an open standard (assuming you open source the code you wrote with Paima) that others can consume for their application. Better support will come for this in Paima in the future (see [this issue](https://github.com/PaimaStudios/paima-engine/issues/411) for more)
+1. **Triggering offchain computation** / **oracles**: there are many cases where you want that your applications reaching a certain state triggers some known private key / entity to perform some action (ex: rewarding the users with tokens, marking an objective as complete in some 3rd party tool, etc.). This can be achieved with the Paima event logs, as you can have a Javascript program listen for specific events as their trigger for additional logic to be executed.
