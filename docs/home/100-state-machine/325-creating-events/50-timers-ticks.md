@@ -122,7 +122,7 @@ export default async function (
   blockHeader: BlockHeader,
   randomnessGenerator: Prando,
   dbConn: Pool
-): Promise<SQLUpdate[]> {
+): Promise<{ stateTransitions: SQLUpdate[], events: [] }> {
 
   const input = parse(inputData.inputData);
 
@@ -147,7 +147,7 @@ export default async function (
         ));
         // highlight-end
         
-        return commands;
+        return { stateTransitions: commands, events: [] };
     }
   }
   ...
