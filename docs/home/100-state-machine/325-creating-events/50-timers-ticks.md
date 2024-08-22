@@ -20,6 +20,16 @@ These can be used to schedule an event that happens in 5 minutes (ex: a potion w
 
 The `precompileName` argument in `createScheduledData` needs to be one of the keys of the object defined through [paima precompiles](../325-creating-events/300-precompiles/100-introduction.md). The associated precompile address will be used as the `userAddress` when the event is triggered.
 
+:::tip
+Scheduled data works off of `blockHeight` and not timestamps. You can learn more about the technical challenges that lead to this design, as well as ways to mitigate this in the [emulated block docs](../300-react-to-events/3-funnel-types/400-stable-tick-rate-funnel.mdx).
+
+When possible, it's best to design your system to not require precise time. For example, instead of calculating rewards every 24hrs exactly, it's easier to schedule timer that triggers *approximately* every 24hrs, and prorate the rewards based on how much time has easily passed.
+
+For example, if you have an schedule that distributed points at 0:00 UTC by guessing how many blocks will happen during that time interval, it's possible the event gets triggered after only 23hrs have passed. In that case, you can just hand out 23hrs worth of rewards and schedule the next payout at the next 0:00 which will be 25hrs away. 
+
+You can read more about ongoing work on this topic [here](https://github.com/PaimaStudios/paima-engine/issues/413)
+:::
+
 ### Time limits
 
 Some games leverage time limits to perform an action (ex: 5 minutes to make a move, otherwise your turn is skipped)
@@ -44,6 +54,8 @@ To do this we can set up a "recursive" scheduled event
 
 <details>
     <summary>Example</summary>
+
+*Note*: this API is planned to improve in the future. See [here](https://github.com/PaimaStudios/paima-engine/issues/414) for more
 
 1. Register your precompile
 
