@@ -8,9 +8,9 @@ slug: /
 Paima is a Web3 Engine optimized for games, gamification and autonomous worlds that allows building web3 applications in just days
 
 Notably, its key features are that it
-1. Allows building onchain games with web2 skills
-2. Protects users even in the case of hacks allowing brands to build web3 applications without worrying
-3. Enables you to deploy your game to leverage multiple chains and modular stacks at once in a single unified user and developer experience
+1. Enables you to deploy your game to leverage multiple chains and modular stacks at once in a single unified user and developer experience
+2. Allows building onchain games with web2 skills
+3. Protects users even in the case of hacks allowing brands to build web3 applications without worrying
 4. Speeds you up to make weekly releases a reality instead of most web3 games which are release-and-pray
 
 Paima supports multiple chains out of the box, making it a fully modular rollup framework.

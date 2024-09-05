@@ -29,9 +29,9 @@ Then, when registering timers or events under to trigger under this precompile, 
 ```ts
 createScheduledData(
   `tick|${input.n + 1}`,
-  someBlockHeight,
+  { blockHeight: someBlockHeight },
   // highlight-next-line
-  PrecompileNames.GameTick
+  { precompile: precompiles[PrecompileNames.GameTick] }
 )
 ```
 

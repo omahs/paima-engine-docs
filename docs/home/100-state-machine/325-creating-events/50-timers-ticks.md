@@ -13,12 +13,12 @@ There are three common usages of timers in Paima
 ## 1. Durations
 
 There are two functions for scheduling events
-- `createScheduledData(inputData: string, blockHeight: number, precompileName: string ): SQLUpdate`
-- `deleteScheduledData(inputData: string, blockHeight: number | null): SQLUpdate`
+- `createScheduledData(inputData: string, { target: blockHeight: number }, { precompile: string }): SQLUpdate`
+- `deleteScheduledData(inputData: string, { blockHeight: number | null }): SQLUpdate`
 
 These can be used to schedule an event that happens in 5 minutes (ex: a potion whose status wears off eventually).
 
-The `precompileName` argument in `createScheduledData` needs to be one of the keys of the object defined through [paima precompiles](../325-creating-events/300-precompiles/100-introduction.md). The associated precompile address will be used as the `userAddress` when the event is triggered.
+The `precompile` argument in `createScheduledData` needs to be one of the values of the object defined through [paima precompiles](../325-creating-events/300-precompiles/100-introduction.md). The associated precompile address will be used as the `userAddress` when the event is triggered.
 
 :::tip
 Scheduled data works off of `blockHeight` and not timestamps. You can learn more about the technical challenges that lead to this design, as well as ways to mitigate this in the [emulated block docs](../300-react-to-events/3-funnel-types/400-stable-tick-rate-funnel.mdx).
@@ -68,23 +68,32 @@ Create `db/migrations/1.sql` and add an input to execute the first schedule.
 For example, imagine we created a precompile called `reset-leaderboard`
 
 ```SQL wordWrap=true
-WITH new_ticks AS (
-  INSERT INTO scheduled_data (block_height, input_data )
-  VALUES (
-    -- get the latest block + 1
-    coalesce((
-      SELECT block_height
-      FROM block_heights
-      ORDER BY block_height DESC
-      LIMIT 1
-    ), 0) + 2,
-    'tick|0'
+WITH
+  new_tick AS (
+    INSERT INTO rollup_inputs (from_address, input_data )
+    VALUES (
+      your_precompile_address_hash,
+      your_data_here
+    )
+    RETURNING id AS new_tick_id
+  ),
+  future_block AS (
+    INSERT INTO rollup_input_future_block (id, future_block_height )
+    VALUES (
+      (SELECT new_tick_id FROM new_tick),
+      -- get the latest block + 1
+      coalesce((
+        SELECT block_height
+        FROM paima_blocks
+        ORDER BY block_height DESC
+        LIMIT 1
+      ), 0) + 2
+    )
   )
-  RETURNING id
-)
-INSERT INTO scheduled_data_precompile (id, precompile)
-SELECT id, 'reset-leaderboard'
-FROM new_ticks
+INSERT INTO rollup_input_origin (id, primitive_name, caip2, tx_hash)
+SELECT new_tick_id, NULL, NULL, NULL
+FROM new_tick
+
 ```
 
 *NOTE*: You can replace the value for the `block_height` if you need to run this at a specific time  
@@ -124,17 +133,17 @@ export interface ScheduleHourlyInput {
 Capture the input in the STF and process it (Generally in `state-transition/src/stf/v1/index.ts`)
 
 ```ts
-import type { type SubmittedChainData } from '@paima/sdk/utils';
+import type { SubmittedChainData } from '@paima/sdk/chain-types';
 import type Prando from '@paima/sdk/prando';
 import type { Pool } from 'pg';
-import type { BlockHeader } from '@paima/sdk/utils';
+import type { PreExecutionBlockHeader } from '@paima/sdk/chain-types';
 
 export default async function (
   inputData: STFSubmittedData,
-  blockHeader: BlockHeader,
+  blockHeader: PreExecutionBlockHeader,
   randomnessGenerator: Prando,
   dbConn: Pool
-): Promise<SQLUpdate[]> {
+): Promise<{ stateTransitions: SQLUpdate[]; events: Events }> {
 
   const input = parse(inputData.inputData);
 
@@ -155,11 +164,12 @@ export default async function (
         // highlight-start
         commands.push(createScheduledData(
                 `hour|${input.tick + 1}`,
-                 blockHeader.blockHeight + hourBlocks
+                 { blockHeight: blockHeader.blockHeight + hourBlocks }
+                 { precompile: your_precompile_here }
         ));
         // highlight-end
         
-        return commands;
+        return { stateTransitions: commands, events: [] };
     }
   }
   ...

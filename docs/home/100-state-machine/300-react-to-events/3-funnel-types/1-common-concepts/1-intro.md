@@ -15,12 +15,12 @@ interface ChainFunnel {
   readData: (blockHeight: number) => Promise<ChainData[]>;
   readPresyncData: (
     args: ReadPresyncDataFrom
-  ) => Promise<{ [network: number]: PresyncChainData[] | 'finished' }>;
+  ) => Promise<{ [caip2: string]: PresyncChainData[] | 'finished' }>;
   getDbTx(): PoolClient;
 }
 
 type ReadPresyncDataFrom = {
-  network: Network;
+  caip2: string;
   from: number;
   to: number;
 }[];

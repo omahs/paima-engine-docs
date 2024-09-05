@@ -4,9 +4,9 @@ sidebar_position: 2
 
 # Primitive Catalogue
 
-Paima, by default, can provide standard transaction types (ex: EVM transactions), but for usability it is useful to refine this raw data type into something more meaningful (ex: know it's an ERC20 transfer). These refinements acts as a sort of primitive that games can easily leverage without having to write the parsing logic themselves, and since these primitives live on the underlying chains they are composable (within that chain)
+When writing an application, you often want to update your application based on common patterns (ex: token transfers). Instead of having to re-implement these patterns from scratch every time, Paima Engine can automatically do the heavy work for you via a feature called the _Primitive Catalogue_.
 
-Paima Engine enables this by automatically doing the heavy work for you via a feature called the _Primitive Catalogue_. Primitives allow you to read data trustlessly from multiple locations such as various L1/L2s. The goal is the Primitive Catalogue is to be the Library of Alexandria of primitives necessary to build onchain games.
+Primitives allow you to tap into these standards trustlessly from multiple locations (such as various L1/L2s) to either for simple accounting purposes (ex: keep track of token ownership by accounts) or for triggering more update complex logic specified by your application's state machine. The goal is the Primitive Catalogue is to be the Library of Alexandria of primitives necessary to build onchain games.
 
 <div style={{textAlign: 'center'}}>
 ![](./primitive-catalogue.png)
@@ -45,22 +45,34 @@ If you try to run your game node with an invalid or non-existent Primitive Catal
 
 ## Accessing the collected data
 
+Primitive data is written directly ledger state for your rollup including the underlying database. You can learn more about how to fetch the information aggregated either from your state machine or from the SQL queries by reading the documentation for the corresponding primitive. 
+
 Each extension may provide data to your game in one (or both) of the two ways below:
 
-1. By collecting the data and saving it into your game database directly, which you can access using Paima SDK functions described in the corresponding sections;
-2. By [scheduling inputs](../../325-creating-events/50-timers-ticks.md) when certain events happen, which you can then react to in your state transition function.
+### *Implicit ledger state*
 
-The data collected and functions used to access it are specific to each type of extension and you can find more information about that in their respective sections. In general, be aware that these functions will read directly from the game state database (which is what the `readonlyDBConn` parameter is for), and you will need to specify the extension name (which is what the `cdeName` parameter in each function is for) which needs to correspond to the name you specified in the configuration file.
+Some primitives work by collecting the data and saving it into your game database directly without necessarily triggering your STF directly. This is useful if you want to passively aggregate information for future use in your application (ex: keep track of user token balances) without having to write no-op STF handlers for all of them.
 
-Scheduled inputs are triggered by events specific to each extension type, with the circumstances and the format of the scheduled input described in their respective sections. The inputs are always scheduled either for the current blockheight (which enables them to be processed immediately, as scheduled inputs are processed before the state transition function is called), or, if they are triggered before the overall `START_BLOCKHEIGHT` of the game node (specified in the `.env` file), in the so-called _pre-sync_ phase, they are scheduled for `START_BLOCKHEIGHT + 1` (which is the first blockheight for which the state transition function is called). The scheduled inputs will always start with the prefix specified in the config as `scheduledPrefix`.
+In this case, the data can still be access through SQL queries directly for the corresponding database, and you can also access it through Javascript with opinionated APIs through primitive-specific utility functions.
 
-The [state transition function](../../../read-write-L2-state/read-data#stf-function) call triggered by a scheduled input originating from a Primitive can also access:
+Note that, given these modify implicit ledger state, these will not modify the block hash of your L2 blocks (this is industry standard, in the same way that for other blockchains things like epoch transitions are not reflected in the block hash)
+
+### *Explicit ledger state*
+
+Some primitives work by creating [scheduling inputs](../../325-creating-events/50-timers-ticks.md) when certain events happen, which you can then react to in your [state transition function](../../../read-write-L2-state/read-data#stf-function).
+
+The exact data passed to your STF depends on the extension, and you can read the documentation of each extension to learn more. 
+
+Given these primitive trigger a state transition, they are also each given a transaction hash, and the call triggered by a scheduled input originating from a Primitive can also access:
 - `inputData.scheduledTxHash`: the original transaction hash that triggered this primitive
-- `inputData.extensionName`: the primitive that triggered
+- `inputData.extensionName`: the primitive that triggered the STF (name specified in your config file)
 - `caip2`: the [caip2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) id of the chain that triggered the event
 
-To learn by example, please consult the NFT LvlUp game template &ndash; `./paima-engine-linux init template nft-lvlup` to learn more.
+The inputs are always scheduled either for the current blockheight (which enables them to be processed immediately, as scheduled inputs are processed before the state transition function is called), or, if they are triggered before the overall `START_BLOCKHEIGHT` of the game node (specified in the `.env` file), in the so-called _pre-sync_ phase, they are scheduled for `START_BLOCKHEIGHT + 1` (which is the first blockheight for which the state transition function is called). The scheduled inputs will always start with the prefix specified in the config as `scheduledPrefix`.
+
+<!-- TODO: this template is deprecated -->
+<!-- To learn by example, please consult the NFT LvlUp game template &ndash; `./paima-engine-linux init template nft-lvlup` to learn more. -->
 
 ## Relation to funnels
 
-Paima [funnels](../3-funnel-types/1-common-concepts/1-intro.md) are in charge of fetching data from various sources for your game, including data for the Primitive Catalogue which are stored as part of `ChainData`.. Depending on where the data you want to access comes from, you may have to add an extra funnel to your game.
+Paima [funnels](../3-funnel-types/1-common-concepts/1-intro.md) are in charge of fetching data from various sources for your game, including data for the Primitive Catalogue which are stored as part of `ChainData`. Depending on where the data you want to access comes from, you may have to add an extra funnel to your game.

@@ -98,11 +98,11 @@ As user wallet might change over time, as they can delegate, migrate and cancel 
 ```js
 // main entry point for your game's state machine
 export default async function (
-  inputData: SubmittedChainData,
-  blockHeight: number,
+  inputData: STFSubmittedData,
+  blockHeader: PreExecutionBlockHeader,
   randomnessGenerator: Prando,
   dbConn: Pool
-): Promise<SQLUpdate[]> {
+): Promise<{ stateTransitions: SQLUpdate[]; events: Events }>
   // highlight-start
   /* use this user to identify the player instead of userAddress or realAddress */
   const user = String(inputData.userId);
