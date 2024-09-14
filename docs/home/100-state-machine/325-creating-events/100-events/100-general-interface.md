@@ -57,7 +57,7 @@ A few things to note:
 import { PaimaEventManager } from '@paima/sdk/events';
 import { events } from '@game/events';
 
-const unsubscribe = await PaimaEventManager.Instance.subscribe(
+const suscriptionHandle = await PaimaEventManager.Instance.subscribe(
   {
     topic: events.QuestCompletionEvent,
     filter: { playerId: undefined }, // all players
@@ -68,7 +68,7 @@ const unsubscribe = await PaimaEventManager.Instance.subscribe(
 );
 
 // later
-await unsubscribe();
+await PaimaEventManager.Instance.unsubscribe(suscriptionHandle);
 ```
 
 # Posting new events
