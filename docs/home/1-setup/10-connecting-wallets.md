@@ -6,9 +6,9 @@ The steps below, however, are to make connecting a wallet to your local network 
 
 ## A Note on Browser Profiles {#profiles}
 
-To avoid making a mistake, it's usually best to have a special environment you use just for testing (that you never connect you main wallet to).
+To avoid making a mistake, it's usually best to have a special environment you use just for testing (that you never connect your main wallet to).
 
-Chrome has a great features that allows creating multiple profiles in your browser -- each with its own totally separate browser storage and separate browser extensions. It makes it easy to create a "test" profile for setting up wallets.
+Chrome has a great feature that allows creating multiple profiles in your browser -- each with its own totally separate browser storage and separate browser extensions. It makes it easy to create a "test" profile for setting up wallets.
 
 Learn more [here](https://support.google.com/chrome/answer/2364824?hl=en&co=GENIE.Platform%3DDesktop).
 
@@ -61,7 +61,7 @@ You should now get significantly more detailed views of the transactions for you
 
 Note that Rivet uses addresses automatically generated for your local network. These addresses are **for testing purposes only**. You should NEVER use them on a real network (these are not your addresses magically imported from MetaMask or elsewhere. They are publicly known addresses that anybody can reuse).
 
-Some features of Rivet will crash (just refresh the page if this happens). This is happens because Rivet was originally designed for [Anvil](https://book.getfoundry.sh/anvil/) which is a different tool for managing local networks (and we're using [Hardhat](https://hardhat.org/) instead). Fortunately these tools are compatible enough that things mostly work.
+Some features of Rivet will crash (just refresh the page if this happens). This is happening because Rivet was originally designed for [Anvil](https://book.getfoundry.sh/anvil/) which is a different tool for managing local networks (and we're using [Hardhat](https://hardhat.org/) instead). Fortunately these tools are compatible enough that things mostly work.
 
 #### 6. (optional) Setup auto-signing
 
@@ -73,7 +73,7 @@ Just open the settings icon at the top-right and check the two boxes seen below 
 
 ## (Not Recommended) Using MetaMask {#metamask}
 
-[MetaMask](https://metamask.io/) is a popular browser extension wallet. Although it works okay for mainnet, it is not optimized for developer usage on networks running locally. We'll show your the steps on how to get it working despite this, but we recommend [Rivet](#rivet) if possible.
+[MetaMask](https://metamask.io/) is a popular browser extension wallet. Although it works okay for mainnet, it is not optimized for developer usage on networks running locally. We'll show you the steps on how to get it working despite this, but we recommend [Rivet](#rivet) if possible.
 
 Key points to keep in mind:
 1. These steps are **only required if running on a localhost network** (not required on mainnet / testnet)
