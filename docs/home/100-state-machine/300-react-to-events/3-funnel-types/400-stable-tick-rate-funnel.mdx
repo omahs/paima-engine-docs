@@ -101,7 +101,7 @@ Emulated blocks have two cases which require two separate functions for calculat
 
 1. It contains one or more blocks. In this case, set the hash to `base64(sha256(block.join(',')))`
 2. It contains no blocks, use the following algorithm:
-   1. Take the emulated block number + the the randomness seed from 100¹ blocks ago, and hash them together: `base64(sha256([blockNumber.toString(10), prevSeed].join(',')))`
+   1. Take the emulated block number + the randomness seed from 100¹ blocks ago, and hash them together: `base64(sha256([blockNumber.toString(10), prevSeed].join(',')))`
    1. Using prando, generate 20 random numbers between `START_BLOCKHEIGHT` and the current emulated block number minus 100.
    1. For each generated blockheight number, fetch the matching randomness seed from the database.
    1. With these 20 previous random seeds, hash them all together with the current block number, and thus generating the new emulated block hash `base64(sha256([blockNumber.toString(10), ...blockSeeds].join(',')))`. Adding `blockNumber` here helps avoid hash collisions during the first batch of 100 when there are no previous block seeds yet.

@@ -88,7 +88,7 @@ https://${rpcBase}/inverseProjection/${standard}/${purpose}/
 
 Where
 - `rpcBase` is the URI for the RPC
-- `standard` is for the specific PRC used to define the the format of this endpoint (ex: `prc5`)
+- `standard` is for the specific PRC used to define the format of this endpoint (ex: `prc5`)
 - `purpose` is a app-dependent string to describe what the NFT is for (ex: `gold`)
 
 An example of such a `baseURI` is `https://rpc.mygame.com/inverseProjection/prc5/gold/`
