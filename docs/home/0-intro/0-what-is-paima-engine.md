@@ -70,7 +70,7 @@ In a sense, you can think of this as an NFT compression protocol. Instead of hav
 
 ## Parallelization (asynchronous compute) to handle over 10k+ tps per game
 
-Paima state machine L2s are not only significantly more efficient than the EVM, they also supports optionally running state machine updates in parallel (not natively available in the EVM), allowing games and apps to massively scale by, for example, having different PVP matches or different maps in an MMO run in parallel.
+Paima state machine L2s are not only significantly more efficient than the EVM, they also support optionally running state machine updates in parallel (not natively available in the EVM), allowing games and apps to massively scale by, for example, having different PVP matches or different maps in an MMO run in parallel.
 
 ## Cross-chain/multichain and sequencing with Paima Whirlpool
 
@@ -90,7 +90,7 @@ Although apps may not always need sequencers, they can still improve scalability
 - Batch transactions together to amortize transaction fees
 - Cover the transaction fees for specified users through meta-transactions (ex: free txs for users who hold a specific NFT, who delegate to a stake pool, or who paid on a separate chain).
 
-Thanks to the flexibility of the batcher system, Paima can even support games built without an enshrined sequencer - that is to say environments with multiple sequencers where anybody can choose to run their own decentralized sequencer for the game and monetize it how they want. This give the benefit of sequencing without the centralization or censorship concerns.
+Thanks to the flexibility of the batcher system, Paima can even support games built without an enshrined sequencer - that is to say environments with multiple sequencers where anybody can choose to run their own decentralized sequencer for the game and monetize it how they want. This gives the benefit of sequencing without the centralization or censorship concerns.
 
 ### Cross-chain NFTs
 
@@ -103,7 +103,7 @@ The goal, therefore, is to try and support connecting these NFTs to state machin
 - NFT bridging
 - Message passing
 
-Paima Engine helps developers overcome problems with connecting multiple ecosystems (even when monitoring multiple chains,  different chains have different block times and finality making solutions non-trivial) by providing a wide-variety of options to different use-cases including special handling of cases where we need to assert the user still holds the NFT (in other words, they haven't sold the NFT since the last time we got an update from the different chain about the ownership status).
+Paima Engine helps developers overcome problems with connecting multiple ecosystems (even when monitoring multiple chains,  different chains have different block times and finality making solutions non-trivial) by providing a wide-variety of options to different use cases including special handling of cases where we need to assert the user still holds the NFT (in other words, they haven't sold the NFT since the last time we got an update from the different chain about the ownership status).
 
 You can find more about the idea [here](../700-multichain-support/1-nfts/1-introduction.mdx)
 
@@ -115,13 +115,13 @@ Paima however, thanks to its projective rollup support, can allow users to keep 
 
 Additionally, this also helps a lot with user acquisition as empirically most users are not comfortable bridging their NFTs from L1→L2 due to bridge security concerns.
 
-Lastly, it also helps with liquidity & composability, as its means you don't have to fracture assets between L1 and L2.
+Lastly, it also helps with liquidity & composability, as it means you don't have to fracture assets between L1 and L2.
 
 ## Example game
 
 To help visualize how these components help build a game, we will show an example game that settles to an Arbitrum Orbit L3 (Xai Games) as its DA layer as it uses a data availability committee making data cheap. However, since almost no users have assets on Xai, it uses Paima's built-in batcher (sequencer) SDK and account abstraction layer to allow players to play gasless from other chains.
 
-Similarly, to give additional liquidity for NFTs for the game, it natively supports minting NFTs on the two of the largest ecosystems in crypto by marketcap (Ethereum through Arbitrum One and Cardano). Since there are many EVM ecosystems and we cannot possibly monitor them all, we use a projected NFT contract connected to a message relayer to support NFTs on the other chains (more on this topic in a later section).
+Similarly, to give additional liquidity for NFTs for the game, it natively supports minting NFTs on two of the largest ecosystems in crypto by marketcap (Ethereum through Arbitrum One and Cardano). Since there are many EVM ecosystems and we cannot possibly monitor them all, we use a projected NFT contract connected to a message relayer to support NFTs on the other chains (more on this topic in a later section).
 
 ![](./paima-tarochi-docs.png)
 
@@ -143,7 +143,7 @@ ZK cryptography is often used in Web3 for two different properties:
 - Its ability to succinctly prove the state of a system (kind of like a very efficient compression system)
 - Its ability to handle functions with private inputs
 
-Both these use-cases are of interest in games, as being able to prove world state helps with composability of worlds, and private inputs allow games with private state (ex: fog of war) and can also help with compliance (ex: being able to prove you know information without revealing the sensitive information publicly)
+Both these use cases are of interest in games, as being able to prove world state helps with composability of worlds, and private inputs allow games with private state (ex: fog of war) and can also help with compliance (ex: being able to prove you know information without revealing the sensitive information publicly)
 
 Paima already comes with [ZK layer](../100-state-machine/300-react-to-events/3-funnel-types/600-mina-funnel.mdx) support, and we are working with [Zeko](http://zeko.io/) (based on Mina Protocol) to enable app-specific ZK rollups as well. You can learn more about the architecture of our ZK layer [here](https://blog.paimastudios.com/paima-zk-layer/).
 
@@ -161,7 +161,7 @@ We plan to integrate storage proof mechanisms natively into Paima Engine. This w
 
 ### State Channels (Short-lived Shards)
 
-Paima's parallelism feature already serves as the first step towards a future system to have game shards to help games scale as needed. These shards could be long-lived, or be ephemeral such as state channels that facilitate use-cases like 5v5 fights where a state channel could be opened between participants and settled when the game is over.
+Paima's parallelism feature already serves as the first step towards a future system to have game shards to help games scale as needed. These shards could be long-lived, or be ephemeral such as state channels that facilitate use cases like 5v5 fights where a state channel could be opened between participants and settled when the game is over.
 
 ### AI
 
@@ -171,13 +171,13 @@ A few common demands have emerged for integration of AI into autonomous worlds:
 
 Since autonomous worlds do not necessarily have a central company driving the evolution of a game, this kind of autonomous action powered via AI and LLMs is an interesting alternative. However, since AI is not something that can be run computationally onchain, the AI is often run similarly to a sovereign rollup - as a uni-directional bridge. This is not ideal as it means you cannot "close the loop" by having the AI result come back and modify the in-game world.
 
-Paima is tackling both of these use-cases:
+Paima is tackling both of these use cases:
 - Paima already supports basic deterministic AI integration and you can see an example of this in a proof-of-concept game called [Oracle RPG](https://github.com/dcSpark/paima-ai-text-adventure) where user Stateful NFTs dynamically evolve based on AI computation
-- We hope to expand AI support to allow more complex use-cases such as villages powered by AI agents that hold Stateful NFTs. This will be done through integration with [Shinkai Network](https://twitter.com/shinkai_network).
+- We hope to expand AI support to allow more complex use cases such as villages powered by AI agents that hold Stateful NFTs. This will be done through integration with [Shinkai Network](https://twitter.com/shinkai_network).
 
 ### P2P layer
 
-Currently, Paima works by updating the world based off on-chain transactions. However, a P2P layer between players could improve the experience.
+Currently, Paima works by updating the world based of on-chain transactions. However, a P2P layer between players could improve the experience.
 
 Notably,
 1. Currently, the game tick rate to that of the underlying chain (1~2 seconds on many L1s/L2s). In the future, we will build a way to connect Paima games to a P2P layer so that transactions can be broadcast between users faster than it takes for the txs to appear on-chain, allowing for a faster experience assuming players have honestly submitted their transactions (optimistic updates).
@@ -215,11 +215,11 @@ If ZK is enforced or if the whole application needs to be written as one giant Z
 1. ZK performance is generally slow for large circuits, making it very hard to build complex games
 1. ZK platforms typically enforce a global maximum on circuit sizes for zkApps deployed to their platform, which complex games will exceed
 1. ZK circuits are currently still hard to write. There are some languages and efforts to simplify this, but they generally still require manual fine-tuning to try and minimize circuit size as much as possible
-1. No support for passive time. This may be, depending in the use-case, replaceable by a Verifiable Delay Function, but this is much more complicated and not as powerful
+1. No support for passive time. This may be, depending in the use case, replaceable by a Verifiable Delay Function, but this is much more complicated and not as powerful
 
 ## Sovereign Rollup disadvantages
 
-Unfortunately there is no "free lunch", and so usage of sovereign rollups comes with some disadvantages as well. Keep in mind while reading this that Paima overcome these deficiencies by combining its sovereign rollup layer with its native support for L1 smart contracts and its ZK layer. You can learn more about this in our blog posts [here](https://blog.paimastudios.com/self-sovereign-rollup/).
+Unfortunately there is no "free lunch", and so usage of sovereign rollups comes with some disadvantages as well. Keep in mind while reading this that Paima overcomes these deficiencies by combining its sovereign rollup layer with its native support for L1 smart contracts and its ZK layer. You can learn more about this in our blog posts [here](https://blog.paimastudios.com/self-sovereign-rollup/).
 
 ### Extra work for trading L2 assets on the L1
 
